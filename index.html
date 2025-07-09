@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test case GREEN-API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('i.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 800px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            gap: 20px;
+        }
+        .left-panel {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .left-panel input[type="password"],
+        .left-panel input[type="tel"],
+        .left-panel input[type="text"],
+        .left-panel button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .left-panel button {
+            background-color: #4cae4f;
+            color: white;
+            cursor: pointer;
+        }
+        .left-panel button:hover {
+            background-color: #3e8e41;
+        }
+        .right-panel {
+            width: 60%;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            overflow: auto;
+            font-family: monospace;
+        }
+        .right-panel table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .right-panel th, .right-panel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .right-panel th {
+            background-color: #f2f2f2;
+        }
+        .left-panel, .right-panel {
+            margin-right: 20px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <!--<input type="text" id="apiUrl" placeholder="Ваш API URL">-->
+            <input type="text" id="instanceId" placeholder="Ваш Instance ID">
+            <input type="password" id="apiToken" placeholder="Ваш Instance Api Token">
+            <button id='getSettings'>Получить настройки инстанса</button>
+            <button id='getStateInstance'>Получить состояние инстанса</button>
+
+            <input type="tel" id="recipientNumber" placeholder="Введите номер">
+
+            <input type="text" id="messageText" placeholder="Сообщение для получателя">
+            <button id='sendMessage'>Отправить сообщение</button>
+
+            <input type="tel" id="fileRecipientNumber" placeholder="Введите номер">
+
+            <input type="text" id="fileUrl" placeholder="Ссылка на файл">
+            <button id='sendFileByUrl'>Отправить файл по ссылке</button>
+        </div>
+        <div class="right-panel" id="responsePanel"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        const responsePanel = document.getElementById('responsePanel');
+
+        const recipientInput = document.getElementById('recipientNumber');
+        const fileRecipientInput = document.getElementById('fileRecipientNumber');
+
+        const recipientTelInput = intlTelInput(recipientInput, {
+            initialCountry: "kz",
+            separateDialCode: true
+        });
+
+        const fileRecipientTelInput = intlTelInput(fileRecipientInput, {
+            initialCountry: "kz",
+            separateDialCode: true
+        });
+
+        function renderResponseAsTable(data) {
+            if (typeof data !== 'object' || data === null) {
+                responsePanel.innerHTML = '<p class="error">Некорректный ответ от сервера</p>';
+                return;
+            }
+
+            let html = '<table>';
+            html += '<thead><tr><th>Ключ</th><th>Значение</th></tr></thead><tbody>';
+
+            for (const [key, value] of Object.entries(data)) {
+                html += `<tr><td>${key}</td><td>${JSON.stringify(value)}</td></tr>`;
+            }
+
+            html += '</tbody></table>';
+            responsePanel.innerHTML = html;
+        }
+
+        async function fetchAPI(url, method = 'GET', body = null) {
+            try {
+                console.log(`Отправка запроса: ${method} ${url}`);
+                const options = {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                };
+                if (body) options.body = JSON.stringify(body);
+
+                const response = await fetch(url, options);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const text = await response.text();
+                const data = text ? JSON.parse(text) : {};
+                renderResponseAsTable(data);
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
+                responsePanel.innerHTML = `<p class="error">Ошибка: ${error.message}</p>`;
+            }
+        }
+
+        document.getElementById('getSettings').addEventListener('click', () => {
+            console.log('Кнопка getSettings нажата');
+            
+            const instanceId = document.getElementById('instanceId').value;
+            const apiToken = document.getElementById('apiToken').value;
+            const url = `https://api.greenapi.com/waInstance${instanceId}/getSettings/${apiToken}`;
+            fetchAPI(url);
+        });
+
+        document.getElementById('getStateInstance').addEventListener('click', () => {
+            console.log('Кнопка getStateInstance нажата');
+            
+            const instanceId = document.getElementById('instanceId').value;
+            const apiToken = document.getElementById('apiToken').value;
+            const url = `https://api.greenapi.com/waInstance${instanceId}/getStateInstance/${apiToken}`;
+            fetchAPI(url);
+        });
+
+        document.getElementById('sendMessage').addEventListener('click', () => {
+            console.log('Кнопка sendMessage нажата');
+            const countryCode = recipientTelInput.getSelectedCountryData().dialCode; // Получаем код страны
+            const rawNumber = document.getElementById('recipientNumber').value; // Считываем введённый номер
+
+            if (!rawNumber) {
+                console.error('Номер телефона не введён!');
+                responsePanel.innerHTML = '<p class="error">Ошибка: Номер телефона не введён!</p>';
+                return;
+            }
+
+            // Составляем полный номер вручную
+            const fullNumber = `+${countryCode}${rawNumber}`;
+            console.log('Полный номер телефона:', fullNumber);
+
+            // Формируем запрос
+            
+            const instanceId = document.getElementById('instanceId').value;
+            const apiToken = document.getElementById('apiToken').value;
+            const messageText = document.getElementById('messageText').value;
+
+            if (!messageText) {
+                console.error('Сообщение не введено!');
+                responsePanel.innerHTML = '<p class="error">Ошибка: Сообщение не введено!</p>';
+                return;
+            }
+
+            const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+            const body = {
+                chatId: `${fullNumber.replace(/\+/g, '')}@c.us`, // Преобразуем номер в нужный формат
+                message: messageText
+            };
+
+            console.log('Отправка данных:', body);
+
+            fetchAPI(url, 'POST', body); // Отправляем запрос
+        });
+
+        document.getElementById('sendFileByUrl').addEventListener('click', () => {
+            console.log('Кнопка sendFileByUrl нажата');
+            const countryCode = fileRecipientTelInput.getSelectedCountryData().dialCode;
+            const rawNumber = document.getElementById('fileRecipientNumber').value;
+
+            if (!rawNumber) {
+                console.error('Номер телефона не введён!');
+                responsePanel.innerHTML = '<p class="error">Ошибка: Номер телефона не введён!</p>';
+                return;
+            }
+
+            const fullNumber = `+${countryCode}${rawNumber}`;
+            console.log('Полный номер телефона:', fullNumber);
+
+            
+            const instanceId = document.getElementById('instanceId').value;
+            const apiToken = document.getElementById('apiToken').value;
+            const fileUrl = document.getElementById('fileUrl').value;
+
+            if (!fileUrl) {
+                console.error('Ссылка на файл не введена!');
+                responsePanel.innerHTML = '<p class="error">Ошибка: Ссылка на файл не введена!</p>';
+                return;
+            }
+
+            const fileName = fileUrl.split('/').pop();
+            const url = `https://api.greenapi.com/waInstance${instanceId}/sendFileByUrl/${apiToken}`;
+            const body = {
+                chatId: `${fullNumber.replace(/\+/g, '')}@c.us`,
+                urlFile: fileUrl,
+                fileName: fileName
+            };
+
+            console.log('Отправка данных:', body);
+
+            fetchAPI(url, 'POST', body);
+        });
+    </script>
+</body>
+</html>

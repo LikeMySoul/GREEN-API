@@ -1,0 +1,25 @@
+name: Deploy via FTPS
+
+on:
+  push:
+    branches:
+      - test-case-html
+
+jobs:
+  deploy:
+    environment: secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
+
+      - name: Deploy via FTPS
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: 
+          lftp -c "open -u $FTP_USER,$FTP_PASS $FTP_HOST; glob -a rm -r *; mput *.html *.ico *.jpg; bye"
