@@ -1,67 +1,67 @@
 # Green-API - Test case
 
-## Описание
-Этот проект представляет собой веб-приложение для взаимодействия с API WhatsApp-инстанса. Оно предоставляет простой и удобный интерфейс для выполнения следующих действий:
+## Description
+This project is a web application for interacting with the WhatsApp instance API. It provides a simple and convenient interface for performing the following actions:
 
-- **Получение настроек инстанса.**
-- **Проверка состояния инстанса.**
-- **Отправка текстовых сообщений** на указанный номер телефона.
-- **Отправка файлов по URL** на указанный номер телефона.
-
----
-
-## Функционал
-### Основные функции:
-1. **Получение настроек инстанса**:
-   Вы можете запросить настройки, указав идентификатор инстанса и токен.
-2. **Проверка состояния инстанса**:
-   Позволяет узнать текущее состояние инстанса (например, активен ли он).
-3. **Отправка текстового сообщения**:
-   Возможность отправить сообщение, указав номер телефона получателя и текст сообщения.
-4. **Отправка файла по URL**:
-   Отправка файла на заданный номер телефона через ссылку.
+- **Get instance settings.**
+- **Check instance status.**
+- **Send text messages** to a specified phone number.
+- **Send files via URL** to a specified phone number.
 
 ---
 
-## Использование
-
-### Предварительные требования
-1. Убедитесь, что у вас есть:
-   - **URL API** вашего WhatsApp-инстанса.
-   - **Идентификатор инстанса (Instance ID).**
-   - **Токен API (Instance API Token).**
-
-2. Подключите необходимые библиотеки:
-   - [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) для работы с телефонными номерами.
-
----
-
-### Инструкция
-1. Откройте файл `index.html` в любом современном браузере.
-2. В левой панели заполните поля:
-   - **API URL**: Ваш URL API.
-   - **Instance ID**: Идентификатор инстанса.
-   - **Instance API Token**: Токен API.
-3. Для отправки сообщений:
-   - Укажите номер телефона получателя.
-   - Введите текст сообщения.
-   - Нажмите кнопку **"Отправить сообщение"**.
-4. Для отправки файлов:
-   - Укажите номер телефона получателя.
-   - Вставьте ссылку на файл.
-   - Нажмите кнопку **"Отправить файл по ссылке"**.
+## Functionality
+### Main functions:
+1. **Get instance settings**:
+You can request settings by specifying the instance ID and token.
+2. **Check instance status**:
+Allows you to find out the current state of the instance (for example, whether it is active).
+3. **Send text message**:
+The ability to send a message by specifying the recipient's phone number and the text of the message.
+4. **Send file via URL**:
+Send a file to a specified phone number via a link.
 
 ---
 
-## Структура проекта
-- **HTML**: Основная разметка страницы.
-- **CSS**: Стили для оформления приложения.
-- **JavaScript**: Обработчики событий и функции для работы с API.
+## Usage
+
+### Prerequisites
+1. Make sure you have:
+- **API URL** of your WhatsApp instance.
+- **Instance ID.**
+- **API Token.**
+
+2. Connect the necessary libraries:
+- [`intl-tel-input`](https://github.com/jackocnr/intl-tel-input) for working with phone numbers.
 
 ---
 
-## Подключаемые библиотеки
-- **[`intl-tel-input`](https://cdnjs.com/libraries/intl-tel-input/17.0.8)**: Работа с телефонными номерами.
-- **[Fetch API](https://developer.mozilla.org/ru/docs/Web/API/Fetch_API)**: Выполнение HTTP-запросов.
+### Instructions
+1. Open the `index.html` file in any modern browser.
+2. In the left panel, fill in the fields:
+- **API URL**: Your API URL.
+- **Instance ID**: Instance ID.
+- **Instance API Token**: API Token.
+3. To send messages:
+- Specify the recipient's phone number.
+- Enter the message text.
+- Click the **"Send message"** button.
+4. To send files:
+- Specify the recipient's phone number.
+- Paste the link to the file.
+- Click the **"Send file via link"** button.
+
+---
+
+## Project structure
+- **HTML**: Basic page markup.
+- **CSS**: Styles for application design.
+- **JavaScript**: Event handlers and functions for working with the API.
+
+---
+
+## Pluggable libraries
+- **[`intl-tel-input`](https://cdnjs.com/libraries/intl-tel-input/17.0.8)**: Working with phone numbers.
+- **[Fetch API](https://developer.mozilla.org/ru/docs/Web/API/Fetch_API)**: Making HTTP requests.
 
 ---
